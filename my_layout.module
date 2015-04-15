@@ -1,0 +1,80 @@
+<?php
+/*
+ * Implements HOOK_views_pdf_custom_layout.
+ */
+
+
+function my_layout_views_pdf_custom_layout_alter(&$layout_data) {
+
+global $user;
+
+ //dsm($layout_data['view']->row_index);
+ //dsm($layout_data['view']->name);
+  //$layout_data['content'] = 'nothing';
+
+  //dsm($layout_data['content']);
+  //dsm($layout_data['key']);
+
+  //$layout_data['content'] = $layout_data['content'].' hi there!';
+
+
+//   if ($layout_data['key'] == 'title') {
+//     my_layout_change_title($layout_data);
+//   }
+
+$layout_data['x'] = ($layout_data['view']->row_index) * .75;
+
+//get arguments from the view
+//dsm($layout_data['view']->args[0]);
+
+//dsm($user->uid);
+
+//get custom user fields
+//dsm(field_info_instances('user', 'user'));
+//field_logo_ref
+//field_custom_memo
+//field_sellpage_color
+//field_custom_color
+
+//get values of custom fields
+$user_data = user_load($user->uid);
+$custom_title = $user_data->field_custom_title['und']['0']['value'];
+$logo_entity = $user_data->field_logo_ref['und']['0']['tid'];
+
+//dsm($custom_title);
+//dsm($logo_entity);
+
+//dsm(field_info_instances('taxonomy_term', 'customer_logos'));
+//$logo_term = entity_load('taxonomy_term', $logo_entity);
+$my_term = taxonomy_term_load($logo_entity);
+
+//$logo_url = field_view_value('taxonomy_term', $logo_term, 'field_customer_logo', '0', 'url');
+
+//dsm($my_term->field_customer_logo['und']['0']['uri']);
+
+$layout_data['this']->ImageSVG($file=$my_term->field_customer_logo['und']['0']['uri'], $x=0, $y, $w=3, $h=1, $align='B', $palign='R', $border=1, $fitonpage=false);
+if ($layout_data['key'] == 'type') {
+$layout_data['content'] = '';
+}
+
+
+
+}
+
+
+
+/*
+ * Function to change layout of title.
+ */
+function my_layout_change_title(&$layout_data) {
+  $layout_data['content'] = 'nothing';
+}
+
+/*
+ * Implements HOOK_views_pdf_custom_post.
+ */
+
+function my_layout_views_pdf_custom_post_alter(&$view) {
+  //add a page after each item
+  $view->pdf->addPage();
+}

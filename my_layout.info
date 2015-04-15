@@ -1,0 +1,5 @@
+name = My Custom Layout
+description = Provides custom layouts for Views PDF.
+package = Views
+core = 7.x
+dependencies[] = views_pdf
